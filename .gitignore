@@ -1,10 +1,11 @@
 .DS_Store
 .idea
 Ass_1.iml
+Ass_2.iml
 imports
-eng.corp.10k
 target
 classes
 src/main/java-manifest
 src/main/java/META-INF
 README.txt
+pom.xml
