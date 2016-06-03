@@ -1,11 +1,12 @@
 package writable;
 
-import org.apache.hadoop.io.Writable;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class WordsInDecadeWritable implements Writable {
+import org.apache.hadoop.io.WritableComparable;
+
+public class WordsInDecadeWritable implements WritableComparable {
     public String word1;
     public String word2;
     public Integer decade;
@@ -60,4 +61,61 @@ public class WordsInDecadeWritable implements Writable {
         res += Integer.toString(decade);
         return res;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((decade == null) ? 0 : decade.hashCode());
+		result = prime * result + ((isCouple == null) ? 0 : isCouple.hashCode());
+		result = prime * result + ((word1 == null) ? 0 : word1.hashCode());
+		result = prime * result + ((word2 == null) ? 0 : word2.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WordsInDecadeWritable other = (WordsInDecadeWritable) obj;
+		if (decade == null) {
+			if (other.decade != null)
+				return false;
+		} else if (!decade.equals(other.decade))
+			return false;
+		if (isCouple == null) {
+			if (other.isCouple != null)
+				return false;
+		} else if (!isCouple.equals(other.isCouple))
+			return false;
+		if (word1 == null) {
+			if (other.word1 != null)
+				return false;
+		} else if (!word1.equals(other.word1))
+			return false;
+		if (word2 == null) {
+			if (other.word2 != null)
+				return false;
+		} else if (!word2.equals(other.word2))
+			return false;
+		return true;
+	}
+
+	public int compareTo(Object arg0) {
+		try{
+			int firstWord = this.word1.compareTo(((WordsInDecadeWritable)arg0).word1);
+			if (firstWord != 0){
+				return firstWord;
+			}
+			return Long.compare(this.decade, ((WordsInDecadeWritable)arg0).decade);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
 }
