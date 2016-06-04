@@ -1,18 +1,22 @@
 package drivers;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.filecache.DistributedCache;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.reduce.LongSumReducer;
 
 import mappers.WordCountMapper;
-import reducers.WordCountReducer;
 import writable.WordsInDecadeWritable;
 
 public class WordCountTest {
+	public static final String HDFS_STOPWORD_LIST = "/data/stopWords.txt";
+	public static final String STOPWORD_LIST = "stopWords.txt";
 
 	public static void main(String[] args) throws Exception {
 		System.out.println("Running Word Count Test v8 !");

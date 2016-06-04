@@ -43,6 +43,8 @@ public class WordCountMapper extends Mapper<LongWritable, Text, WordsInDecadeWri
 					}
 				}
 				if (validWords.size() > 1) {
+					context.write(new WordsInDecadeWritable("TotalWordsInDecade", year),
+							new LongWritable(count.get() * Long.valueOf(validWords.size())));
 					if (validWords.size() == 2) {
 						if (!isStopWord(validWords.get(0))) {
 							context.write(new WordsInDecadeWritable(validWords.get(0), year), count);
