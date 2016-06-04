@@ -108,19 +108,38 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 	}
 
 	public int compareTo(WordsInDecadeWritable o) {
-		int res = word1.compareTo(o.word1);
-		if (res == 0) {
-			if (word2 != null && o.word2 != null) {
-				res = word2.compareTo(o.word2);
-			} else if (word2 != null) {
-				return 1;
-			}
+		int res = 0;
+		if (this.isCouple && o.isCouple) { // both have 2 words.
+			res = this.word1.compareTo(o.word1);
 			if (res == 0) {
-				return decade.compareTo(o.decade);
+				res = this.word2.compareTo(o.word2);
+				if (res == 0) {
+					return this.decade.compareTo(o.decade);
+				} else {
+					return res;
+				}
+			} else {
+				return res;
 			}
-			return res;
+		} else if (this.isCouple && !o.isCouple) {
+			return 1;
+		} else if (!this.isCouple && o.isCouple) {
+			return -1;
+		} else {
+			res = this.word1.compareTo(o.word1);
+			if (res == 0) {
+				return this.decade.compareTo(o.decade);
+			} else {
+				return res;
+			}
 		}
-		return res;
 	}
 
+	public static void main(String[] args) {
+		WordsInDecadeWritable w1 = new WordsInDecadeWritable("need", 1900);
+		WordsInDecadeWritable w2 = new WordsInDecadeWritable("need", "", 2000);
+		System.out.println(w1.compareTo(w2));
+		System.out.println(w1.equals(w2));
+
+	}
 }

@@ -62,7 +62,7 @@ public class WordCountMapper extends Mapper<LongWritable, Text, WordsInDecadeWri
 							context.write(new WordsInDecadeWritable(middleWord, year), count);
 							for (String word : validWords) {
 								if (!word.equals(middleWord) && !isStopWord(word)) {
-									context.write(new WordsInDecadeWritable(middleWord, year), count);
+									context.write(new WordsInDecadeWritable(word, year), count);
 									context.write(new WordsInDecadeWritable(word, middleWord, year), count);
 								}
 							}
