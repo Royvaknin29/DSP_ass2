@@ -15,10 +15,16 @@ import writable.WordsInDecadeWritable;
 public class WordCountTest {
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("Running Word Count Test v1.0 !");
+		System.out.println("Running Word Count Test v8 !");
 		Configuration conf = new Configuration();
+		System.out.println("uploading stopwords txt..");
+		FileSystem fs = FileSystem.get(conf);
+		Path hdfsPath = new Path(HDFS_STOPWORD_LIST);
+		fs.copyFromLocalFile(false, true, new Path(STOPWORD_LIST), hdfsPath);
+		DistributedCache.addCacheFile(hdfsPath.toUri(), conf);
 		// conf.set("mapred.map.tasks","10");
 		// conf.set("mapred.reduce.tasks","2");
+		System.out.println("FINISHED uploading stopwords txt..");
 		Job job = new Job(conf, "Word Count");
 		System.out.println("Created new job!");
 		job.setJarByClass(WordCountTest.class);
@@ -26,9 +32,9 @@ public class WordCountTest {
 		job.setMapperClass(WordCountMapper.class);
 		System.out.println("MapperClass is set!");
 		// job.setPartitionerClass(PartitionerClass.class);
-		job.setCombinerClass(WordCountReducer.class);
-		System.out.println("CombinerClass is set!");
-		job.setReducerClass(WordCountReducer.class);
+		// job.setCombinerClass(WordCountReducer.class);
+		// System.out.println("CombinerClass is set!");
+		job.setReducerClass(LongSumReducer.class);
 		System.out.println("ReducerClass is set!");
 		job.setOutputKeyClass(WordsInDecadeWritable.class);
 		System.out.println("OutputKeyClass is set!");

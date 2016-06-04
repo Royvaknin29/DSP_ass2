@@ -18,8 +18,6 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 	}
 
 	public WordsInDecadeWritable(String word1, String word2, Integer decade) {
-		word1 = word1.toLowerCase().replaceAll("[^\\w\\s]", "");
-		word2 = word2.toLowerCase().replaceAll("[^\\w\\s]", "");
 		if (word1.compareTo(word2) < 0) {
 			this.word1 = word1;
 			this.word2 = word2;
@@ -32,7 +30,6 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 	}
 
 	public WordsInDecadeWritable(String word1, Integer decade) {
-		word1 = word1.toLowerCase().replaceAll("[^\\w\\s]", "");
 		this.word1 = word1;
 		this.word2 = null;
 		this.decade = (int) Math.floor(decade / 10) * 10;
