@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class WordCountReducer extends Reducer<Text, IntWritable, Text, LongWritable> {
+import writable.WordsInDecadeWritable;
 
-    public void reduce(Text key, Iterable<LongWritable> values, Context context)
+public class WordCountReducer extends Reducer<WordsInDecadeWritable, IntWritable, WordsInDecadeWritable, LongWritable> {
+
+    public void reduce(WordsInDecadeWritable key, Iterable<LongWritable> values, Context context)
             throws IOException, InterruptedException {
         System.out.println("Reducing: " + key.toString());
     	long sum = 0;

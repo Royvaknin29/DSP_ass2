@@ -3,7 +3,6 @@ package drivers;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
@@ -11,6 +10,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import mappers.WordCountMapper;
 import reducers.WordCountReducer;
+import writable.WordsInDecadeWritable;
 
 public class WordCountTest {
 
@@ -30,7 +30,7 @@ public class WordCountTest {
         System.out.println("CombinerClass is set!");
         job.setReducerClass(WordCountReducer.class);
         System.out.println("ReducerClass is set!");
-        job.setOutputKeyClass(Text.class);
+        job.setOutputKeyClass(WordsInDecadeWritable.class);
         System.out.println("OutputKeyClass is set!");
         job.setOutputValueClass(LongWritable.class);
         System.out.println("OutputValueClass is set!");

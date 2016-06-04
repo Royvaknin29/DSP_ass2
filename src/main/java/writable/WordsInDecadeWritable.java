@@ -1,3 +1,4 @@
+
 package writable;
 
 import java.io.DataInput;
@@ -6,61 +7,37 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.WritableComparable;
 
-public class WordsInDecadeWritable implements WritableComparable {
-    public String word1;
-    public String word2;
-    public Integer decade;
-    public Boolean isCouple;
+public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWritable> {
+	public String word1;
+	public String word2;
+	public Integer decade;
+	public Boolean isCouple;
 
-    public WordsInDecadeWritable(String word1, String word2, Integer decade) {
-        word1 = word1.toLowerCase().replaceAll("[^\\w\\s]","");
-        word2 = word2.toLowerCase().replaceAll("[^\\w\\s]","");
-        if (word1.compareTo(word2) < 0) {
-            this.word1 = word1;
-            this.word2 = word2;
-        } else {
-            this.word1 = word2;
-            this.word2 = word1;
-        }
-        this.decade = (int) Math.floor(decade/10)*10;
-        this.isCouple = true;
-    }
+	public WordsInDecadeWritable() {
 
-    public WordsInDecadeWritable(String word1, Integer decade) {
-        word1 = word1.toLowerCase().replaceAll("[^\\w\\s]","");
-        this.word1 = word1;
-        this.word2 = null;
-        this.decade = (int) Math.floor(decade/10)*10;
-        this.isCouple = false;
-    }
+	}
 
-    public void write(DataOutput out) throws IOException {
-        out.writeBoolean(isCouple);
-        out.writeChars(word1);
-        if (isCouple) {
-            out.writeChars(word2);
-        }
-        out.writeInt(decade);
-    }
+	public WordsInDecadeWritable(String word1, String word2, Integer decade) {
+		word1 = word1.toLowerCase().replaceAll("[^\\w\\s]", "");
+		word2 = word2.toLowerCase().replaceAll("[^\\w\\s]", "");
+		if (word1.compareTo(word2) < 0) {
+			this.word1 = word1;
+			this.word2 = word2;
+		} else {
+			this.word1 = word2;
+			this.word2 = word1;
+		}
+		this.decade = (int) Math.floor(decade / 10) * 10;
+		this.isCouple = true;
+	}
 
-    public void readFields(DataInput in) throws IOException {
-        isCouple = in.readBoolean();
-        word1 = in.readLine();
-        if (isCouple) {
-            word2 = in.readLine();
-        }
-        decade = in.readInt();
-    }
-
-    public String toString() {
-        String res = "";
-        res += word1 + " ";
-        if (isCouple) {
-            res += word2 + " ";
-        }
-        res += Integer.toString(decade);
-        return res;
-    }
+	public WordsInDecadeWritable(String word1, Integer decade) {
+		word1 = word1.toLowerCase().replaceAll("[^\\w\\s]", "");
+		this.word1 = word1;
+		this.word2 = null;
+		this.decade = (int) Math.floor(decade / 10) * 10;
+		this.isCouple = false;
+	}
 
 	@Override
 	public int hashCode() {
@@ -105,17 +82,48 @@ public class WordsInDecadeWritable implements WritableComparable {
 		return true;
 	}
 
-	public int compareTo(Object arg0) {
-		try{
-			int firstWord = this.word1.compareTo(((WordsInDecadeWritable)arg0).word1);
-			if (firstWord != 0){
-				return firstWord;
-			}
-			return Long.compare(this.decade, ((WordsInDecadeWritable)arg0).decade);
+	public void write(DataOutput out) throws IOException {
+		out.writeBoolean(isCouple);
+		out.writeUTF(word1);
+		if (isCouple) {
+			out.writeUTF(word2);
 		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		return 0;
+		out.writeInt(decade);
 	}
+
+	public void readFields(DataInput in) throws IOException {
+		isCouple = in.readBoolean();
+		word1 = in.readUTF();
+		if (isCouple) {
+			word2 = in.readUTF();
+		}
+		decade = in.readInt();
+	}
+
+	public String toString() {
+		String res = "";
+		res += word1 + " ";
+		if (isCouple) {
+			res += word2 + " ";
+		}
+		res += Integer.toString(decade);
+		return res;
+	}
+
+	public int compareTo(WordsInDecadeWritable o) {
+		int res = word1.compareTo(o.word1);
+		if (res == 0) {
+			if (word2 != null && o.word2 != null) {
+				res = word2.compareTo(o.word2);
+			} else if (word2 != null) {
+				return 1;
+			}
+			if (res == 0) {
+				return decade.compareTo(o.decade);
+			}
+			return res;
+		}
+		return res;
+	}
+
 }
