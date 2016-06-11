@@ -42,7 +42,7 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 		int result = 1;
 		result = prime * result + ((decade == null) ? 0 : decade.hashCode());
 		result = prime * result + ((isCouple == null) ? 0 : isCouple.hashCode());
-		result = prime * result + ((word1 == null) ? 0 : word1.hashCode());
+		result = prime * result + ((word1 == null) ? 0 : word1.replaceAll("[^\\w\\s]", "").hashCode());
 		result = prime * result + ((word2 == null) ? 0 : word2.hashCode());
 		return result;
 	}
@@ -135,11 +135,4 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 		}
 	}
 
-	public static void main(String[] args) {
-		WordsInDecadeWritable w1 = new WordsInDecadeWritable("need", 1900);
-		WordsInDecadeWritable w2 = new WordsInDecadeWritable("need", "", 2000);
-		System.out.println(w1.compareTo(w2));
-		System.out.println(w1.equals(w2));
-
-	}
 }
