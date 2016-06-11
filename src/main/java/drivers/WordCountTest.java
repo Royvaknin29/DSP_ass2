@@ -25,7 +25,7 @@ public class WordCountTest {
 	public static final String STOPWORD_LIST = "stopWords.txt";
 
 	public static void main(String[] args) throws Exception {
-
+		System.out.println("Howdie");
 		Job firstJob = initFirstJob(args[0], args[1] + "tmp");
 		firstJob.waitForCompletion(true);
 		Job secondJob = initSecondJob(args[1] + "tmp", args[1]);

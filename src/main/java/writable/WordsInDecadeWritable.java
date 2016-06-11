@@ -135,4 +135,7 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 		}
 	}
 
+	public static void main(String[] args) {
+		WordsInDecadeWritable w1 = new WordsInDecadeWritable("project", 
+	}
 }

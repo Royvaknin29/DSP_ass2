@@ -19,7 +19,7 @@ public class SecondMapper extends Mapper<LongWritable, Text, WordsInDecadeWritab
 		if (primarySplit.length > 1) {
 			count = Long.valueOf(primarySplit[1]);
 			String[] rawWordInDecade = primarySplit[0].split(" ");
-			if (rawWordInDecade.length > 2) {
+			if (rawWordInDecade.length > 2) { // 2 words exist in entry.
 				words = new WordsInDecadeWritable(rawWordInDecade[0], rawWordInDecade[1],
 						Integer.valueOf(rawWordInDecade[2]));
 			} else if (rawWordInDecade.length == 2) {
