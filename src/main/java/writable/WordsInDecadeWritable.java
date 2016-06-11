@@ -135,11 +135,4 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 		}
 	}
 
-	public static void main(String[] args) {
-		WordsInDecadeWritable w1 = new WordsInDecadeWritable("need", 1900);
-		WordsInDecadeWritable w2 = new WordsInDecadeWritable("need", "", 2000);
-		System.out.println(w1.compareTo(w2));
-		System.out.println(w1.equals(w2));
-
-	}
 }
