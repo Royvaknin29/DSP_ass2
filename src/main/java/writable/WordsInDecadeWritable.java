@@ -18,8 +18,6 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 	}
 
 	public WordsInDecadeWritable(String word1, String word2, Integer decade) {
-		word1 = word1.toLowerCase().replaceAll("[^\\w\\s]", "");
-		word2 = word2.toLowerCase().replaceAll("[^\\w\\s]", "");
 		if (word1.compareTo(word2) < 0) {
 			this.word1 = word1;
 			this.word2 = word2;
@@ -32,7 +30,6 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 	}
 
 	public WordsInDecadeWritable(String word1, Integer decade) {
-		word1 = word1.toLowerCase().replaceAll("[^\\w\\s]", "");
 		this.word1 = word1;
 		this.word2 = null;
 		this.decade = (int) Math.floor(decade / 10) * 10;
@@ -111,19 +108,31 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 	}
 
 	public int compareTo(WordsInDecadeWritable o) {
-		int res = word1.compareTo(o.word1);
-		if (res == 0) {
-			if (word2 != null && o.word2 != null) {
-				res = word2.compareTo(o.word2);
-			} else if (word2 != null) {
-				return 1;
-			}
+		int res = 0;
+		if (this.isCouple && o.isCouple) { // both have 2 words.
+			res = this.word1.compareTo(o.word1);
 			if (res == 0) {
-				return decade.compareTo(o.decade);
+				res = this.word2.compareTo(o.word2);
+				if (res == 0) {
+					return this.decade.compareTo(o.decade);
+				} else {
+					return res;
+				}
+			} else {
+				return res;
 			}
-			return res;
+		} else if (this.isCouple && !o.isCouple) {
+			return 1;
+		} else if (!this.isCouple && o.isCouple) {
+			return -1;
+		} else {
+			res = this.word1.compareTo(o.word1);
+			if (res == 0) {
+				return this.decade.compareTo(o.decade);
+			} else {
+				return res;
+			}
 		}
-		return res;
 	}
 
 }
