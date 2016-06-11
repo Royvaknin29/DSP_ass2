@@ -8,8 +8,11 @@ public class SecondPartitioner<K2, V2> extends Partitioner<K2, V2> {
 	public void configure(JobConf job) {
 	}
 
-	/** Use {@link Object#hashCode()} to partition. */
-	public int getPartition(K2 key, V2 value, int numReduceTasks) {
-		return 1;
+	@Override
+	public int getPartition(K2 key, V2 value, int numPartitions) {
+		return 1 % numPartitions;
 	}
+
+	/** Use {@link Object#hashCode()} to partition. */
+
 }
