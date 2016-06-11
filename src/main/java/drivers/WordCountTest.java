@@ -15,10 +15,7 @@ import org.apache.hadoop.mapreduce.lib.reduce.LongSumReducer;
 import mappers.SecondMapper;
 import mappers.WordCountMapper;
 import reducers.SecondReducer;
-import writable.SecondReduceOutput;
-import writable.SecondSortComperator;
-import writable.SeconderySortWritable;
-import writable.WordsInDecadeWritable;
+import writable.*;
 
 public class WordCountTest {
 	public static final String HDFS_STOPWORD_LIST = "/data/stopWords.txt";
@@ -40,6 +37,7 @@ public class WordCountTest {
 		job.setJarByClass(WordCountTest.class);
 		job.setMapperClass(SecondMapper.class);
 		// job.setCombinerClass(SecondReducer.class);
+		job.setPartitionerClass(SecondPartitioner.class);
 		job.setReducerClass(SecondReducer.class);
 		job.setMapOutputKeyClass(WordsInDecadeWritable.class);
 		job.setMapOutputValueClass(SeconderySortWritable.class);

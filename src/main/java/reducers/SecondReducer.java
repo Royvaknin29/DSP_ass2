@@ -11,14 +11,15 @@ import writable.WordsInDecadeWritable;
 public class SecondReducer
 		extends Reducer<WordsInDecadeWritable, SeconderySortWritable, WordsInDecadeWritable, SecondReduceOutput> {
 	private WordsInDecadeWritable currentKeyWord;
-	private long currentCount;
+	private long currentCount = 0;
 
 	public void reduce(WordsInDecadeWritable key, Iterable<SeconderySortWritable> values, Context context)
 			throws IOException, InterruptedException {
 		System.out.println("Reducing: " + key.toString());
 		for (SeconderySortWritable value : values) {
-			WordsInDecadeWritable keyOut = null;
-			SecondReduceOutput valueOut = null;
+			WordsInDecadeWritable keyOut;
+			SecondReduceOutput valueOut;
+			WordsInDecadeWritable tempDollarKey;
 			if (!value.hasWord()) {
 				System.out.println("replacing currWord. was:" + currentKeyWord + " now:" + key.word1);
 				valueOut = new SecondReduceOutput(value.getCount());
@@ -27,7 +28,8 @@ public class SecondReducer
 				this.currentCount = value.getCount();
 			} else { // got a couple of words..
 				System.out.println("current SeconderySortWritable is:" + value.toString());
-				if (!key.equals(currentKeyWord) || currentCount == 0) {
+				tempDollarKey = new WordsInDecadeWritable(key.word1 + '$', key.decade);
+				if (!tempDollarKey.equals(currentKeyWord) || currentCount == 0) {
 					// throw new IOException("Second Reduce Error - key does not
 					// match!");
 					System.out.println("Didn't write: " + key.word1 + " / " + currentKeyWord);
