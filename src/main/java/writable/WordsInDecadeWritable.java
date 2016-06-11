@@ -42,7 +42,7 @@ public class WordsInDecadeWritable implements WritableComparable<WordsInDecadeWr
 		int result = 1;
 		result = prime * result + ((decade == null) ? 0 : decade.hashCode());
 		result = prime * result + ((isCouple == null) ? 0 : isCouple.hashCode());
-		result = prime * result + ((word1 == null) ? 0 : word1.hashCode());
+		result = prime * result + ((word1 == null) ? 0 : word1.replaceAll("[^\\w\\s]", "").hashCode());
 		result = prime * result + ((word2 == null) ? 0 : word2.hashCode());
 		return result;
 	}

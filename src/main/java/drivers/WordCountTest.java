@@ -37,7 +37,7 @@ public class WordCountTest {
 		job.setJarByClass(WordCountTest.class);
 		job.setMapperClass(SecondMapper.class);
 		// job.setCombinerClass(SecondReducer.class);
-		job.setPartitionerClass(SecondPartitioner.class);
+//		job.setPartitionerClass(SecondPartitioner.class);
 		job.setReducerClass(SecondReducer.class);
 		job.setMapOutputKeyClass(WordsInDecadeWritable.class);
 		job.setMapOutputValueClass(SeconderySortWritable.class);
