@@ -35,7 +35,7 @@ public class SecondReduceOutput implements WritableComparable<SecondReduceOutput
 		String res = "";
 		if (hasSecondWord) {
 			res += "(" + keyWord + ", " + keyWordCount.toString() + ") ";
-			res += "[(" + keyWord + ", " + secondWord + ") " + ", " + Long.toString(coupleCount) + "]";
+			res += "[(" + keyWord + ", " + secondWord + ")" + ", " + Long.toString(coupleCount) + "]";
 		} else {
 			res = keyWordCount.toString();
 		}
@@ -44,19 +44,19 @@ public class SecondReduceOutput implements WritableComparable<SecondReduceOutput
 
 	public void write(DataOutput out) throws IOException {
 		out.writeBoolean(hasSecondWord);
-		out.writeUTF(keyWord);
 		out.writeLong(keyWordCount);
 		if (hasSecondWord) {
+			out.writeUTF(keyWord);
 			out.writeUTF(secondWord);
 			out.writeLong(coupleCount);
 		}
 	}
 
 	public void readFields(DataInput in) throws IOException {
-		keyWord = in.readUTF();
-		keyWordCount = in.readLong();
 		hasSecondWord = in.readBoolean();
+		keyWordCount = in.readLong();
 		if (hasSecondWord) {
+			keyWord = in.readUTF();
 			secondWord = in.readUTF();
 			coupleCount = in.readLong();
 		}
@@ -129,6 +129,46 @@ public class SecondReduceOutput implements WritableComparable<SecondReduceOutput
 		} else if (!secondWord.equals(other.secondWord))
 			return false;
 		return true;
+	}
+
+	public String getKeyWord() {
+		return keyWord;
+	}
+
+	public void setKeyWord(String keyWord) {
+		this.keyWord = keyWord;
+	}
+
+	public Long getKeyWordCount() {
+		return keyWordCount;
+	}
+
+	public void setKeyWordCount(Long keyWordCount) {
+		this.keyWordCount = keyWordCount;
+	}
+
+	public boolean isHasSecondWord() {
+		return hasSecondWord;
+	}
+
+	public void setHasSecondWord(boolean hasSecondWord) {
+		this.hasSecondWord = hasSecondWord;
+	}
+
+	public String getSecondWord() {
+		return secondWord;
+	}
+
+	public void setSecondWord(String secondWord) {
+		this.secondWord = secondWord;
+	}
+
+	public Long getCoupleCount() {
+		return coupleCount;
+	}
+
+	public void setCoupleCount(Long coupleCount) {
+		this.coupleCount = coupleCount;
 	}
 
 }
