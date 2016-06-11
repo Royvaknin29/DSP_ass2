@@ -22,7 +22,7 @@ public class WordCountTest {
 	public static final String STOPWORD_LIST = "stopWords.txt";
 
 	public static void main(String[] args) throws Exception {
-
+		System.out.println("hi! =]");
 		Job firstJob = initFirstJob(args[0], args[1] + "tmp");
 		firstJob.waitForCompletion(true);
 		Job secondJob = initSecondJob(args[1] + "tmp", args[1]);
@@ -37,7 +37,7 @@ public class WordCountTest {
 		job.setJarByClass(WordCountTest.class);
 		job.setMapperClass(SecondMapper.class);
 		// job.setCombinerClass(SecondReducer.class);
-//		job.setPartitionerClass(SecondPartitioner.class);
+		// job.setPartitionerClass(SecondPartitioner.class);
 		job.setReducerClass(SecondReducer.class);
 		job.setMapOutputKeyClass(WordsInDecadeWritable.class);
 		job.setMapOutputValueClass(SeconderySortWritable.class);

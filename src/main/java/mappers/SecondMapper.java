@@ -30,7 +30,7 @@ public class SecondMapper extends Mapper<LongWritable, Text, WordsInDecadeWritab
 		} else {
 			return;
 		}
-		System.out.println("Mapping 2nd time..");
+		System.out.println("Mapped: " + value);
 		WordsInDecadeWritable keyToWrite = null;
 		SeconderySortWritable valueToWrite = null;
 		if (!words.isCouple) {

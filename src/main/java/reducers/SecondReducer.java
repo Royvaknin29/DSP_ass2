@@ -10,22 +10,22 @@ import writable.WordsInDecadeWritable;
 
 public class SecondReducer
 		extends Reducer<WordsInDecadeWritable, SeconderySortWritable, WordsInDecadeWritable, SecondReduceOutput> {
-	private WordsInDecadeWritable currentKeyWord;
-	private long currentCount = 0;
 
 	public void reduce(WordsInDecadeWritable key, Iterable<SeconderySortWritable> values, Context context)
 			throws IOException, InterruptedException {
+		WordsInDecadeWritable currentKeyWord = null;
+		long currentCount = 0;
 		System.out.println("Reducing: " + key.toString());
 		for (SeconderySortWritable value : values) {
 			WordsInDecadeWritable keyOut;
 			SecondReduceOutput valueOut;
 			WordsInDecadeWritable tempDollarKey;
 			if (!value.hasWord()) {
-				System.out.println("replacing currWord. was:" + currentKeyWord + " now:" + key.word1);
+				System.out.println("replacing currWord. was:" + currentKeyWord + " now:" + key.toString());
 				valueOut = new SecondReduceOutput(value.getCount());
 				keyOut = new WordsInDecadeWritable(key.word1, key.decade);
-				this.currentKeyWord = key;
-				this.currentCount = value.getCount();
+				currentKeyWord = key;
+				currentCount = value.getCount();
 			} else { // got a couple of words..
 				System.out.println("current SeconderySortWritable is:" + value.toString());
 				tempDollarKey = new WordsInDecadeWritable(key.word1 + '$', key.decade);
@@ -35,7 +35,7 @@ public class SecondReducer
 					System.out.println("Didn't write: " + key.word1 + " / " + currentKeyWord);
 					continue;
 				}
-				valueOut = new SecondReduceOutput(this.currentKeyWord.word1, this.currentCount, value.getWord(),
+				valueOut = new SecondReduceOutput(currentKeyWord.word1, currentCount, value.getWord(),
 						value.getCount());
 				keyOut = new WordsInDecadeWritable(value.getWord(), key.decade);
 			}
