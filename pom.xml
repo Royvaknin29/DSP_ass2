@@ -27,23 +27,29 @@
     		<systemPath>C:\Program Files\Java\jdk1.8.0_77/lib/tools.jar</systemPath>
 		</dependency>	      
         <!-- http://mvnrepository.com/artifact/org.apache.hadoop/hadoop-common -->
+		<!-- http://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-emr -->
+	<dependency>
+	    <groupId>com.amazonaws</groupId>
+	    <artifactId>aws-java-sdk-emr</artifactId>
+	    <version>1.11.7</version>
+	</dependency>
 		<dependency>
     		<groupId>org.apache.hadoop</groupId>
     		<artifactId>hadoop-common</artifactId>
-    		<version>2.7.0</version>
+    		<version>2.7.1</version>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-common -->
 		<dependency>
     		<groupId>org.apache.hadoop</groupId>
     		<artifactId>hadoop-mapreduce-client-common</artifactId>
-		    <version>2.7.0</version>
+		    <version>2.7.1</version>
 		</dependency>
 		
 		<!-- http://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-core -->
 		<dependency>
     		<groupId>org.apache.hadoop</groupId>
     		<artifactId>hadoop-mapreduce-client-core</artifactId>
-    		<version>2.7.0</version>
+    		<version>2.7.1</version>
 		</dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
