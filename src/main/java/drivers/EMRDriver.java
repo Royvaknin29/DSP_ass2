@@ -17,18 +17,21 @@ import com.amazonaws.services.elasticmapreduce.model.StepConfig;
 
 public class EMRDriver {
 
-	private static String accKey = "";
-	private static String secKey = "";
+	private static String accKey = "AKIAITMC36AKHFMX6GCQ";
+	private static String secKey = "nfJ2A0pNKjLMSY0eRXEH/7K6bWpzmnjCzitOjKVF";
 
 	public static void main(String[] args) {
 
-//		AWSCredentials credentials = null;
+		AWSCredentials credentials = null;
 		try {
 //			AWSCredentialsProvider credentialsProvider = new ProfileCredentialsProvider();
 //			credentials = new PropertiesCredentials(
 //			credentials = credentialsProvider.getCredentials();
-			AWSCredentials credentials = setCredentialsFromArgs(accKey, secKey);
+			 credentials = setCredentialsFromArgs(accKey, secKey);
 			System.out.println("credentials are set!");
+		} catch (Exception e) {
+			throw new AmazonClientException("credentials given fail to log ...", e);
+		}
 			AmazonElasticMapReduce mapReduce = new AmazonElasticMapReduceClient(credentials);
 			System.out.println("successfully connected to emr!");
 
@@ -41,22 +44,30 @@ public class EMRDriver {
 
 			JobFlowInstancesConfig instances = new JobFlowInstancesConfig().withInstanceCount(2)
 					.withMasterInstanceType(InstanceType.M3Xlarge.toString())
-					.withSlaveInstanceType(InstanceType.M3Xlarge.toString()).withHadoopVersion("2.7.2")
+					.withSlaveInstanceType(InstanceType.M3Xlarge.toString()).withHadoopVersion("2.7.1")
 					.withEc2KeyName("first_key_pair").withKeepJobFlowAliveWhenNoSteps(false)
 					.withPlacement(new PlacementType("us-east-1a"));
 
-			RunJobFlowRequest runFlowRequest = new RunJobFlowRequest().withName("jobname").withInstances(instances)
-					.withSteps(stepConfig).withLogUri("s3n://roy-aaron-dsp-ass2/logs");
+			RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
+				.withName("ReleaseLabel Cluster")
+				.withReleaseLabel("emr-4.3.0")
+				.withInstances(new JobFlowInstancesConfig()
+						.withEc2KeyName("myKeyPair")
+						.withInstanceCount(1)
+						.withKeepJobFlowAliveWhenNoSteps(true)
+						.withMasterInstanceType("m3.xlarge")
+						.withSlaveInstanceType("m3.xlarge"));
+
+		//RunJobFlowRequest runFlowRequest = new RunJobFlowRequest().withName("jobname").withInstances(instances)
+		//			.withSteps(stepConfig).withLogUri("s3n://roy-aaron-dsp-ass2/logs");
 
 			runFlowRequest.setServiceRole("EMR_DefaultRole");
 			runFlowRequest.setJobFlowRole("EMR_EC2_DefaultRole");
-
+			System.out.println("running job..");
 			RunJobFlowResult runJobFlowResult = mapReduce.runJobFlow(runFlowRequest);
 			String jobFlowId = runJobFlowResult.getJobFlowId();
 			System.out.println("Ran job flow with id: " + jobFlowId);
-		} catch (Exception e) {
-			throw new AmazonClientException("credentials given fail to log ...", e);
-		}
+
 	}
 
 	public static AWSCredentials setCredentialsFromArgs(String accKey,
