@@ -11,7 +11,7 @@ public class SecondSortComperator extends WritableComparator {
 
 	@Override
 	public int compare(WritableComparable a, WritableComparable b) {
-		return super.compare(a, b);
+		return -1 * super.compare(a, b);
 	}
 
 }
