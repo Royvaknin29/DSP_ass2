@@ -41,9 +41,9 @@ public class FinalKeyByDecade implements WritableComparable<FinalKeyByDecade> {
 		int res = 0;
 		res = this.decade.compareTo(o.decade);
 		if (res == 0) {
-			return this.PMI.compareTo(o.PMI);
+			return -1 * this.PMI.compareTo(o.PMI);
 		} else {
-			return res;
+			return -1 * res;
 		}
 	}
 

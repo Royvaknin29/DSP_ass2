@@ -1,6 +1,7 @@
 package drivers;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -9,8 +10,8 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.filecache.DistributedCache;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.reduce.LongSumReducer;
 
@@ -32,9 +33,6 @@ public class WordCountTest {
 		DECADE1900, DECADE1910, DECADE1920, DECADE1930, DECADE1940, DECADE1950, DECADE1960, DECADE1970, DECADE1980, DECADE1990, DECADE2000
 	}
 
-	public static final String HDFS_STOPWORD_LIST = "https://s3.amazonaws.com/roy-aaron-dsp-ass2/input/stopWords.txt";
-	public static final String STOPWORD_LIST = "stopWords.txt";
-
 	public static void main(String[] args) throws Exception {
 		System.out.println("hi! =]");
 		Job firstJob = initFirstJob(args[0], args[1] + "tmp1");
@@ -43,14 +41,18 @@ public class WordCountTest {
 		secondJob.waitForCompletion(true);
 		Job thirdJob = initThirdJob(args[1] + "tmp2", args[1] + "tmp3");
 		thirdJob.waitForCompletion(true);
-		Job fourthJob = initFourthJob(args[1] + "tmp3", args[1]);
-		System.exit(fourthJob.waitForCompletion(true) ? 0 : 1);
+		Job fourthJob = initFourthJob(args[1] + "tmp3", args[1], Integer.parseInt(args[2]));
+		fourthJob.waitForCompletion(true);
+		Map<Double, Double> fMeasures = FMeasureUtils.getFMeasure(args[1] + "tmp3");
+		System.out.println("Fmeasures are: " + fMeasures.toString());
+		System.exit(0);
 
 	}
 
-	public static Job initFourthJob(String in, String out) throws IllegalArgumentException, IOException {
+	public static Job initFourthJob(String in, String out, int k) throws IllegalArgumentException, IOException {
 		System.out.println("initializing fourth job..");
 		Configuration conf = new Configuration();
+		conf.setInt("k", k);
 		FileSystem fs = FileSystem.get(conf);
 		Job job = new Job(conf, "Word Count2");
 		job.setJarByClass(WordCountTest.class);
@@ -69,7 +71,7 @@ public class WordCountTest {
 	}
 
 	public static Job initThirdJob(String in, String out) throws IllegalArgumentException, IOException {
-		System.out.println("initializing second job..");
+		System.out.println("initializing third job..");
 		Configuration conf = new Configuration();
 		System.out.println("getting fs by comf");
 		FileSystem fs = FileSystem.get(conf);
@@ -118,14 +120,7 @@ public class WordCountTest {
 		System.out.println("Creating conf");
 		Configuration conf = new Configuration();
 		System.out.println("FileSystem.get(conf)");
-		FileSystem fs = FileSystem.get(conf);
-		System.out.println("new Path(HDFS_STOPWORD_LIST)");
-		Path hdfsPath = new Path(HDFS_STOPWORD_LIST);
-		System.out.println("fs.copyFromLocalFile(false, true, new Path(STOPWORD_LIST), hdfsPath);");
-		fs.copyFromLocalFile(false, true, new Path(STOPWORD_LIST), hdfsPath);
-		DistributedCache.addCacheFile(hdfsPath.toUri(), conf);
-		System.out.println("new Job(conf, Word Count);");
-		Job job = new Job(conf, "Word Count");
+		Job job = new Job(conf, "job1");
 		System.out.println("setting all..");
 		job.setJarByClass(WordCountTest.class);
 		job.setMapperClass(WordCountMapper.class);
@@ -135,9 +130,10 @@ public class WordCountTest {
 		job.setMapOutputValueClass(LongWritable.class);
 		job.setOutputKeyClass(WordsInDecadeWritable.class);
 		job.setOutputValueClass(LongWritable.class);
-		// job.setInputFormatClass(SequenceFileInputFormat.class);
-		System.out.println("Setting in/out path");
+		job.setInputFormatClass(SequenceFileInputFormat.class);
+		System.out.println("Setting in path");
 		FileInputFormat.addInputPath(job, new Path(in));
+		System.out.println("Setting out path");
 		FileOutputFormat.setOutputPath(job, new Path(out));
 		System.out.println("job created!");
 		return job;
