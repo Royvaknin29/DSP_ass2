@@ -12,7 +12,6 @@ public class FourthMapper extends Mapper<LongWritable, Text, FinalKeyByDecade, T
 
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		// <key, value> format: < [word, decade], pmi>
-		System.out.println("Mapping 4th time..");
 		String[] primarySplit = value.toString().split("\t");
 		FinalKeyByDecade newKey = null;
 		Text newValue = new Text();

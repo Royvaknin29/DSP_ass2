@@ -14,8 +14,6 @@ public class FourthReducer extends Reducer<FinalKeyByDecade, Text, FinalKeyByDec
 
 	public void reduce(FinalKeyByDecade key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
-		System.out.println("Reducing: " + key.toString());
-
 		if (currentDecade != key.decade) {
 			currentDecade = key.decade;
 			i = 0;

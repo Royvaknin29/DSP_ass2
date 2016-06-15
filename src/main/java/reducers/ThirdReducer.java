@@ -20,37 +20,27 @@ public class ThirdReducer
 
 	public void reduce(WordsInDecadeWritable key, Iterable<SecondReduceOutput> values, Context context)
 			throws IOException, InterruptedException {
-		System.out.println("Reducing: " + key.toString());
 		for (SecondReduceOutput value : values) {
 			WordsInDecadeWritable keyOut = null;
 			DoubleWritable valueOut = new DoubleWritable();
 			WordsInDecadeWritable tempDollarKey;
 			if (!value.isHasSecondWord()
 					&& (dollarCountByDecade == null || !key.word1.equals(dollarCountByDecade.getWordWithDollar()))) {
-
 				if (dollarCountByDecade != null) {
-					System.out.println("replacing dollarCountByDecade. was:" + dollarCountByDecade.getWordWithDollar()
-							+ " now:" + key.toString());
 				}
 				dollarCountByDecade = new DollarWordCountInDecade(key.word1);
 				dollarCountByDecade.getCountByDecade().put(key.decade, value.getKeyWordCount());
 
 			} else if (!value.isHasSecondWord()) {
-				System.out.println("inserted into decade:" + key.decade + "count:" + value.getKeyWordCount());
 				dollarCountByDecade.getCountByDecade().put(key.decade, value.getKeyWordCount());
 
 			} else { // got a couple of words..
-				System.out.println("current SeconderySortWritable is:" + value.toString());
 				tempDollarKey = new WordsInDecadeWritable(key.word1 + '$', key.decade);
 				if (!tempDollarKey.word1.equals(dollarCountByDecade.getWordWithDollar())
 						|| dollarCountByDecade.getCountByDecade().get(key.decade) == 0) {
-					System.out.println(
-							"Didn't write: " + tempDollarKey.word1 + " / " + dollarCountByDecade.getWordWithDollar());
 					continue;
 				}
 
-				System.out.println("Counter Value of " + "DECADE" + key.decade.toString() + "is: " + context
-						.getCounter(WordCountTest.DecadeCounters.valueOf("DECADE" + key.decade.toString())).getValue());
 				valueOut.set(
 						calcPMI(value.getKeyWordCount(), dollarCountByDecade.getCountByDecade().get(key.decade),
 								value.getCoupleCount(),

@@ -23,8 +23,6 @@ public class WordCountMapper extends Mapper<LongWritable, Text, WordsInDecadeWri
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
 		// value format: n-gram, year, occurrences, pages, books
-		// System.out.println("Mapping Line num: " + ++numOfMapping);
-		System.out.println("Mapping.. #" + key.get() + "\t" + value.toString());
 		String[] split = value.toString().split("\t");
 		if (split.length > 4) {
 			int year = Integer.parseInt(split[1]);
@@ -38,11 +36,6 @@ public class WordCountMapper extends Mapper<LongWritable, Text, WordsInDecadeWri
 						validWords.add(ngram[i]);
 					}
 				}
-				System.out.println("Valid words: " + validWords.toString());
-				for (String word : validWords) {
-					System.out.println("Word " + word + " isStopword?" + isStopWord(word));
-				}
-
 				if (validWords.size() > 1) {
 					context.write(new WordsInDecadeWritable("TotalWordsInDecade", year),
 							new LongWritable(count.get() * Long.valueOf(validWords.size())));
@@ -94,7 +87,6 @@ public class WordCountMapper extends Mapper<LongWritable, Text, WordsInDecadeWri
 	@Override
 	protected void setup(Mapper<LongWritable, Text, WordsInDecadeWritable, LongWritable>.Context context)
 			throws IOException, InterruptedException {
-		System.out.println("STARTING CONFIGURE!!!");
 		this.stopWords = new HashSet<String>(Arrays.asList("", "a", "able", "about", "above", "abst", "accordance",
 				"according", "accordingly", "across", "act", "actually", "added", "adj", "affected", "affecting",
 				"affects", "after", "afterwards", "again", "against", "ah", "all", "almost", "alone", "along",

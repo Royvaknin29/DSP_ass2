@@ -49,11 +49,29 @@ public class WordCountTest {
 
 	}
 
+	public static Job initFifth(String in, String out, int k) throws IllegalArgumentException, IOException {
+		System.out.println("initializing fifth job..");
+		Configuration conf = new Configuration();
+		Job job = new Job(conf, "Word Count2");
+		job.setJarByClass(WordCountTest.class);
+		job.setMapperClass(FourthMapper.class);
+		// job.setCombinerClass(SecondReducer.class);
+		// job.setPartitionerClass(SecondPartitioner.class);
+		job.setReducerClass(FifthReducer.class);
+		job.setMapOutputKeyClass(FinalKeyByDecade.class);
+		job.setMapOutputValueClass(Text.class);
+		job.setOutputKeyClass(FinalKeyByDecade.class);
+		job.setOutputValueClass(Text.class);
+		FileInputFormat.addInputPath(job, new Path(in));
+		FileOutputFormat.setOutputPath(job, new Path(out));
+
+		return job;
+	}
+
 	public static Job initFourthJob(String in, String out, int k) throws IllegalArgumentException, IOException {
 		System.out.println("initializing fourth job..");
 		Configuration conf = new Configuration();
 		conf.setInt("k", k);
-		FileSystem fs = FileSystem.get(conf);
 		Job job = new Job(conf, "Word Count2");
 		job.setJarByClass(WordCountTest.class);
 		job.setMapperClass(FourthMapper.class);
@@ -66,15 +84,13 @@ public class WordCountTest {
 		job.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job, new Path(in));
 		FileOutputFormat.setOutputPath(job, new Path(out));
-
+		System.out.println("fourth job created!");
 		return job;
 	}
 
 	public static Job initThirdJob(String in, String out) throws IllegalArgumentException, IOException {
 		System.out.println("initializing third job..");
 		Configuration conf = new Configuration();
-		System.out.println("getting fs by comf");
-		FileSystem fs = FileSystem.get(conf);
 		Job job = new Job(conf, "Word Count2");
 		job.setJarByClass(WordCountTest.class);
 		job.setMapperClass(ThirdMapper.class);
@@ -89,6 +105,7 @@ public class WordCountTest {
 
 		FileInputFormat.addInputPath(job, new Path(in));
 		FileOutputFormat.setOutputPath(job, new Path(out));
+		System.out.println("third job created!");
 
 		return job;
 	}
@@ -111,17 +128,14 @@ public class WordCountTest {
 
 		FileInputFormat.addInputPath(job, new Path(in));
 		FileOutputFormat.setOutputPath(job, new Path(out));
-
+		System.out.println("second job created!");
 		return job;
 	}
 
 	public static Job initFirstJob(String in, String out) throws IllegalArgumentException, IOException {
 		System.out.println("initializing first job..");
-		System.out.println("Creating conf");
 		Configuration conf = new Configuration();
-		System.out.println("FileSystem.get(conf)");
 		Job job = new Job(conf, "job1");
-		System.out.println("setting all..");
 		job.setJarByClass(WordCountTest.class);
 		job.setMapperClass(WordCountMapper.class);
 		job.setCombinerClass(LongSumReducer.class);
@@ -131,11 +145,9 @@ public class WordCountTest {
 		job.setOutputKeyClass(WordsInDecadeWritable.class);
 		job.setOutputValueClass(LongWritable.class);
 		job.setInputFormatClass(SequenceFileInputFormat.class);
-		System.out.println("Setting in path");
 		FileInputFormat.addInputPath(job, new Path(in));
-		System.out.println("Setting out path");
 		FileOutputFormat.setOutputPath(job, new Path(out));
-		System.out.println("job created!");
+		System.out.println("first job created!");
 		return job;
 	}
 }
