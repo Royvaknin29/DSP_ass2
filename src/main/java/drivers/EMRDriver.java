@@ -32,23 +32,24 @@ public class EMRDriver {
 			AmazonElasticMapReduce mapReduce = new AmazonElasticMapReduceClient(credentials);
 			System.out.println("successfully connected to emr!");
 
-			HadoopJarStepConfig hadoopJarStep = new HadoopJarStepConfig()
-					.withJar("s3n://roy-aaron-dsp-ass2/Ass_2.jar")
+			HadoopJarStepConfig hadoopJarStep = new HadoopJarStepConfig().withJar("s3n://roy-aaron-dsp-ass2/Ass_2.jar")
 					.withMainClass("drivers.WordCountTest")
-					.withArgs("s3n://roy-aaron-dsp-ass2/input/",
-							"s3n://roy-aaron-dsp-ass2/output/");
+					.withArgs("s3n://roy-aaron-dsp-ass2/input", "s3n://roy-aaron-dsp-ass2/output");
 
 			StepConfig stepConfig = new StepConfig().withName("stepname").withHadoopJarStep(hadoopJarStep)
 					.withActionOnFailure("TERMINATE_JOB_FLOW");
 
 			JobFlowInstancesConfig instances = new JobFlowInstancesConfig().withInstanceCount(2)
-					.withMasterInstanceType(InstanceType.M1Small.toString())
-					.withSlaveInstanceType(InstanceType.M1Small.toString()).withHadoopVersion("2.7.1")
+					.withMasterInstanceType(InstanceType.M3Xlarge.toString())
+					.withSlaveInstanceType(InstanceType.M3Xlarge.toString()).withHadoopVersion("2.7.2")
 					.withEc2KeyName("first_key_pair").withKeepJobFlowAliveWhenNoSteps(false)
 					.withPlacement(new PlacementType("us-east-1a"));
 
 			RunJobFlowRequest runFlowRequest = new RunJobFlowRequest().withName("jobname").withInstances(instances)
-					.withSteps(stepConfig).withLogUri("s3n://roy-aaron-dsp-ass2/logs/");
+					.withSteps(stepConfig).withLogUri("s3n://roy-aaron-dsp-ass2/logs");
+
+			runFlowRequest.setServiceRole("EMR_DefaultRole");
+			runFlowRequest.setJobFlowRole("EMR_EC2_DefaultRole");
 
 			RunJobFlowResult runJobFlowResult = mapReduce.runJobFlow(runFlowRequest);
 			String jobFlowId = runJobFlowResult.getJobFlowId();
