@@ -32,7 +32,7 @@ public class WordCountTest {
 		DECADE1900, DECADE1910, DECADE1920, DECADE1930, DECADE1940, DECADE1950, DECADE1960, DECADE1970, DECADE1980, DECADE1990, DECADE2000
 	}
 
-	public static final String HDFS_STOPWORD_LIST = "/data/stopWords.txt";
+	public static final String HDFS_STOPWORD_LIST = "https://s3.amazonaws.com/roy-aaron-dsp-ass2/input/stopWords.txt";
 	public static final String STOPWORD_LIST = "stopWords.txt";
 
 	public static void main(String[] args) throws Exception {
@@ -71,6 +71,7 @@ public class WordCountTest {
 	public static Job initThirdJob(String in, String out) throws IllegalArgumentException, IOException {
 		System.out.println("initializing second job..");
 		Configuration conf = new Configuration();
+		System.out.println("getting fs by comf");
 		FileSystem fs = FileSystem.get(conf);
 		Job job = new Job(conf, "Word Count2");
 		job.setJarByClass(WordCountTest.class);
@@ -114,12 +115,18 @@ public class WordCountTest {
 
 	public static Job initFirstJob(String in, String out) throws IllegalArgumentException, IOException {
 		System.out.println("initializing first job..");
+		System.out.println("Creating conf");
 		Configuration conf = new Configuration();
+		System.out.println("FileSystem.get(conf)");
 		FileSystem fs = FileSystem.get(conf);
+		System.out.println("new Path(HDFS_STOPWORD_LIST)");
 		Path hdfsPath = new Path(HDFS_STOPWORD_LIST);
+		System.out.println("fs.copyFromLocalFile(false, true, new Path(STOPWORD_LIST), hdfsPath);");
 		fs.copyFromLocalFile(false, true, new Path(STOPWORD_LIST), hdfsPath);
 		DistributedCache.addCacheFile(hdfsPath.toUri(), conf);
+		System.out.println("new Job(conf, Word Count);");
 		Job job = new Job(conf, "Word Count");
+		System.out.println("setting all..");
 		job.setJarByClass(WordCountTest.class);
 		job.setMapperClass(WordCountMapper.class);
 		job.setCombinerClass(LongSumReducer.class);
@@ -129,9 +136,10 @@ public class WordCountTest {
 		job.setOutputKeyClass(WordsInDecadeWritable.class);
 		job.setOutputValueClass(LongWritable.class);
 		// job.setInputFormatClass(SequenceFileInputFormat.class);
+		System.out.println("Setting in/out path");
 		FileInputFormat.addInputPath(job, new Path(in));
 		FileOutputFormat.setOutputPath(job, new Path(out));
-
+		System.out.println("job created!");
 		return job;
 	}
 }
