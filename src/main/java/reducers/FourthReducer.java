@@ -8,17 +8,27 @@ import org.apache.hadoop.mapreduce.Reducer;
 import writable.FinalKeyByDecade;
 
 public class FourthReducer extends Reducer<FinalKeyByDecade, Text, FinalKeyByDecade, Text> {
-	// TODO: get from main calss parameter K, write out the first K entries for
-	// each decade...
+
+	private int currentDecade = 0;
+	private int i = 0;
+
 	public void reduce(FinalKeyByDecade key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
 		System.out.println("Reducing: " + key.toString());
-		// long sum = 0;
-		// for (LongWritable value : values) {
-		// sum += value.get();
-		// }
+
+		if (currentDecade != key.decade) {
+			currentDecade = key.decade;
+			i = 0;
+		}
+		int k = context.getConfiguration().getInt("k", 10);
+		
 		for (Text value : values) {
-			context.write(key, value);
+			if (i < k) {
+				i++;
+				context.write(key, value);
+			} else {
+				break;
+			}
 		}
 	}
 }

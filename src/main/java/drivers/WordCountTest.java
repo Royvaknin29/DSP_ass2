@@ -43,14 +43,15 @@ public class WordCountTest {
 		secondJob.waitForCompletion(true);
 		Job thirdJob = initThirdJob(args[1] + "tmp2", args[1] + "tmp3");
 		thirdJob.waitForCompletion(true);
-		Job fourthJob = initFourthJob(args[1] + "tmp3", args[1]);
+		Job fourthJob = initFourthJob(args[1] + "tmp3", args[1], Integer.parseInt(args[2]));
 		System.exit(fourthJob.waitForCompletion(true) ? 0 : 1);
 
 	}
 
-	public static Job initFourthJob(String in, String out) throws IllegalArgumentException, IOException {
+	public static Job initFourthJob(String in, String out, int k) throws IllegalArgumentException, IOException {
 		System.out.println("initializing fourth job..");
 		Configuration conf = new Configuration();
+		conf.setInt("k", k);
 		FileSystem fs = FileSystem.get(conf);
 		Job job = new Job(conf, "Word Count2");
 		job.setJarByClass(WordCountTest.class);
