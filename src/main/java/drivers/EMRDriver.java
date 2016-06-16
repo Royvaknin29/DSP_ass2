@@ -17,8 +17,8 @@ import com.amazonaws.services.elasticmapreduce.model.StepConfig;
 
 public class EMRDriver {
 
-	private static String accKey = "AKIAITMC36AKHFMX6GCQ";
-	private static String secKey = "nfJ2A0pNKjLMSY0eRXEH/7K6bWpzmnjCzitOjKVF";
+	private static String accKey = "";
+	private static String secKey = "";
 
 	public static void main(String[] args) {
 
